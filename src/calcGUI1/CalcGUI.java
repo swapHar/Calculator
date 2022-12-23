@@ -20,7 +20,7 @@ public class CalcGUI implements ActionListener{
 	
 	double num1=0,num2=0,result=0;
 	String operator;
-	boolean optrFlag=false; // flag to check if operator button is pressed 
+	boolean optrFlag=false,equlFlag=false; // flag to check if operator button is pressed 
 		
 		
 	public CalcGUI() {
@@ -130,38 +130,15 @@ public class CalcGUI implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object actSource = e.getSource();
-		String tmpTxt = calTextfld.getText();
-				
 		
-		for (int i=0;i<10;i++) {          // code for number buttons
-			
-			if (actSource == numButtons[0]) {
-				optrFlag=false;
-				if (tmpTxt.equals("0")) {
-					return;
-				}else {
-					calTextfld.setText(tmpTxt.concat("0"));
-					return;
-				}
-				
-			}else if(actSource==numButtons[i]) {
-				optrFlag=false;
-				if (tmpTxt.equals("0")) {
-					calTextfld.setText(String.valueOf(i));
-				}else {
-					calTextfld.setText(tmpTxt.concat(String.valueOf(i)));
-				}	
-			}	
-		}
+		Object actSource = e.getSource();
+		
+		String tmpTxt = calTextfld.getText();
+					
+		
 		if (actSource == clrButton) { //code for clear button
 			
-			calLabel.setText("");
-			calTextfld.setText("0");
-			num1=0;
-			num2=0;
-			operator="";
-			optrFlag=false;
+			clearFunction();
 			
 		}else if (actSource == delButton) { //code for delete button
 			
@@ -172,7 +149,8 @@ public class CalcGUI implements ActionListener{
 					
 					calTextfld.setText(deleteChar(tmpTxt));
 					
-				}if(calTextfld.getText().equals("")) {
+				}
+				if(calTextfld.getText().equals("")) {
 					
 					calTextfld.setText("0");
 					calLabel.setText("");
@@ -215,72 +193,110 @@ public class CalcGUI implements ActionListener{
 		}else if (actSource==divButton){
 			setOperator(tmpTxt, "/");
 	
-		}else if (actSource==equlButton) {
+		}else if (actSource==equlButton) { // code for Equalto Button
 		    
 			optrFlag=true;
-		    
-			num2=Double.parseDouble(tmpTxt);
-			String s=String.valueOf(roundDouble(num1));
-			calLabel.setText(s+ operator + tmpTxt +"=");
 			
-			switch(operator) {
-			case"+":
-				result=calculator.addition(num1, num2);
-				break;
-			case"-":
-				result=calculator.subtraction(num1, num2);
-				break;
-			case"x":
-				result=calculator.multiplication(num1, num2);
-				break;
-			case"/":
-				result=calculator.division(num1, num2);
-				break;
+		    if (tmpTxt.equals("")) {
+		    	return;
+		    }else {
+		    	num2=Double.parseDouble(tmpTxt);
+				String s=String.valueOf(roundDouble(num1));
+				if(operator != null) {
+				   calLabel.setText(s+ operator + tmpTxt +"=");		
+				   result=evaluate(num1, num2, operator);
+				   calTextfld.setText(roundDouble(result));
+				
+				   equlFlag=true;
+				
+				}
+		    }	
+			
+		} else {
+			if (equlFlag==true) {
+				clearFunction();
+				tmpTxt="";
 			}
 			
-				calTextfld.setText(roundDouble(result));
-			
+			for (int i=0;i<10;i++) {          // code for number buttons
+				
+				if(actSource==numButtons[i]) {
+					
+					optrFlag=false;
+					if (tmpTxt.equals("0")) {
+						calTextfld.setText(String.valueOf(i));
+					}else {
+						calTextfld.setText(tmpTxt.concat(String.valueOf(i)));
+					}	
+				}	
+			}
 		}
 	
 	}
 	
-   	
-    public String roundDouble(double resultTxt) {
-    	if (Double.toString(resultTxt).endsWith(".0")) {
-			String tmpStr= Double.toString(resultTxt).replace(".0", "");
-			return tmpStr;
-		}else {
-			return Double.toString(resultTxt);
+   	public double evaluate(double tmpNum1,double tmpNum2,String tmpOprt) {
+   		double tmpResult=0;
+   		
+   		switch(tmpOprt) {
+		case"+":
+			tmpResult=calculator.addition(tmpNum1, tmpNum2);
+			break;
+		case"-":
+			tmpResult=calculator.subtraction(tmpNum1, tmpNum2);
+			break;
+		case"x":
+			tmpResult=calculator.multiplication(tmpNum1, tmpNum2);
+			break;
+		case"/":
+			tmpResult=calculator.division(tmpNum1, tmpNum2);
+			break;
 		}
-    }
+   		
+   		return tmpResult;
+   		
+   	}
 	
+ 	
     public void setOperator(String txtFLD,String optr) {
     	
     	this.operator=optr;
 		calTextfld.setText("");
 		
 		optrFlag=true;
+		equlFlag=false;
 		
 		if (txtFLD.equals("")) {
 			
-			//code to replace last character from lable text to new operator
+			//code to replace last character from label text to new operator
 		    String txt=calLabel.getText();
 		    
 		    int txtLn=txt.length();
-		    String str = null,reStr;
+		    String str = "";
 		    
 		    if (txtLn>0) {
 		    	str=deleteChar(txt);
 		    }
-		    reStr =str.concat(optr);
 		    
-			calLabel.setText(reStr);
+			calLabel.setText(str.concat(optr));
 			
 		}else {
 		    num1=Double.parseDouble(txtFLD);	
 			calLabel.setText(txtFLD.concat(operator));
+			
 		}
     	
+    }
+    
+    public void clearFunction (){
+		
+    	calLabel.setText("");
+		calTextfld.setText("0");
+		num1=0;
+		num2=0;
+		operator=null;
+		result=0;
+		optrFlag=false;
+		equlFlag=false;
     }
     
     public String deleteChar(String text) {
@@ -293,4 +309,13 @@ public class CalcGUI implements ActionListener{
 		return retext;
 		
 	}
+    
+    public String roundDouble(double resultTxt) {
+    	if (Double.toString(resultTxt).endsWith(".0")) {
+			String tmpStr= Double.toString(resultTxt).replace(".0", "");
+			return tmpStr;
+		}else {
+			return Double.toString(resultTxt);
+		}
+    }
 }
