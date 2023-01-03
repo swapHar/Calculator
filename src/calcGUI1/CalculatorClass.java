@@ -1,8 +1,11 @@
 package calcGUI1;
 
+// methods to perform mathematical operatioins (addition, subtraction, multiplication, division)
+// are part of this class
+
 public class CalculatorClass {
 	private double firstNum,secondNum,result;
-	//private double divisionResult;
+	
 	
 	public double addition(double firstNum,double secondNum) {
 		this.firstNum=firstNum;

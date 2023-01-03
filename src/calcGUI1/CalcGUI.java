@@ -18,16 +18,20 @@ public class CalcGUI implements ActionListener{
 	
 	CalculatorClass calculator = new CalculatorClass();
 	
-	double num1=0,num2=0,result=0;
+	double num1=0,num2=0,result=0; // num1, num2 store values of numbers entered in Text field
+									// result = stores after mathematical operation
 	String operator;
-	boolean optrFlag=false,equlFlag=false; // flag to check if operator button is pressed 
+	boolean optrFlag=false,equlFlag=false; // flags to check if operator button and equal
+										   // button are pressed 
 		
-		
+	// constructor 	
 	public CalcGUI() {
+		
 		prepareFrame();
 
 	}
 	
+	//this method prepares calculator frame
 	public void prepareFrame() {
 		calFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		calFrame.setSize(420, 550);
@@ -41,7 +45,7 @@ public class CalcGUI implements ActionListener{
 		calFrame.setVisible(true);
 		
 	}
-	
+	//this method sets text field and label on calculator frame
 	public void prepareLabl_Text() {
 		
 		calLabel.setBounds(250, 0, 100, 25);
@@ -56,7 +60,7 @@ public class CalcGUI implements ActionListener{
 		calFrame.add(calTextfld);
 		
 	}
-
+	//this method sets buttons on calculator frame
 	public void prepareButtons() {
 		
 		addButton = new JButton("+");
@@ -128,6 +132,8 @@ public class CalcGUI implements ActionListener{
 		
 	}
 	
+	// source of the action event is identified in this method and 
+	// respective methods are called to execute the required action.
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
@@ -171,7 +177,7 @@ public class CalcGUI implements ActionListener{
 					calTextfld.setText(tmpTxt.concat("."));
 				}
 			}
-		}else if(actSource==negButton) {
+		}else if(actSource==negButton) { //code for (+/-) button
 			if (tmpTxt.equals("")) {
 				return;
 			}else if (tmpTxt.equals("0")) {
@@ -181,7 +187,7 @@ public class CalcGUI implements ActionListener{
 				a=Double.parseDouble(tmpTxt)*-1;
 				calTextfld.setText(roundDouble(a));					
 			}			
-		}else if (actSource==addButton){
+		}else if (actSource==addButton){ //code for operator button
 			setOperator(tmpTxt, "+");
 			
 		}else if (actSource==subButton){
@@ -234,6 +240,8 @@ public class CalcGUI implements ActionListener{
 	
 	}
 	
+	// in this method respective methods of CalculatorClass are called
+	// depending on the passed value of operator
    	public double evaluate(double tmpNum1,double tmpNum2,String tmpOprt) {
    		double tmpResult=0;
    		
@@ -256,7 +264,7 @@ public class CalcGUI implements ActionListener{
    		
    	}
 	
- 	
+ 	//value is assigned to operator variable and text is set to label
     public void setOperator(String txtFLD,String optr) {
     	
     	this.operator=optr;
@@ -287,6 +295,7 @@ public class CalcGUI implements ActionListener{
     	
     }
     
+    // this method will reset values of all the variables,text field,label and flags 
     public void clearFunction (){
 		
     	calLabel.setText("");
@@ -299,6 +308,8 @@ public class CalcGUI implements ActionListener{
 		equlFlag=false;
     }
     
+    
+    // this method will delete last character of the given string
     public String deleteChar(String text) {
 		
 		int txtLnt = text.length();
@@ -310,6 +321,8 @@ public class CalcGUI implements ActionListener{
 		
 	}
     
+    
+    // this method will remove ".0" from given double 
     public String roundDouble(double resultTxt) {
     	if (Double.toString(resultTxt).endsWith(".0")) {
 			String tmpStr= Double.toString(resultTxt).replace(".0", "");
